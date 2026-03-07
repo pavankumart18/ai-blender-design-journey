@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Driven 3D Design — Claude × Blender MCP</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Outfit:wght@200;300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════ SYSTEM ════════════════════════════════ */
+:root {
+  --ink: #0b0b0f;
+  --ink-90: #141419;
+  --ink-80: #1c1c24;
+  --ink-60: #2a2a38;
+  --ink-40: #44445a;
+  --ink-20: #77779a;
+  --paper: #f0ede6;
+  --paper-dim: #d8d4cb;
+  --cream: #faf8f3;
+  --fire: #e8442a;
+  --ember: #ff6944;
+  --gold: #c9a84c;
+  --gold-light: #e8d48b;
+  --sea: #2d8fa5;
+  --sea-light: #5ec4d4;
+  --sage: #5a9a6e;
+  --violet: #7c5cbf;
+  --blush: #d4577a;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--ink);
+  color: var(--paper);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--gold); color: var(--ink); }
+
+/* ════════════════════════════════ UTILITY ════════════════════════════════ */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 clamp(1.5rem, 4vw, 3rem); }
+.narrow { max-width: 780px; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+/* Reveal on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(60px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
+.delay-4 { transition-delay: 0.4s; }
+.delay-5 { transition-delay: 0.5s; }
+
+/* ════════════════════════════════ COVER ════════════════════════════════ */
+.cover {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 0 6vh 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.cover-grain {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cover-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 20%, #1a1428 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 20% 80%, #0f1a20 0%, transparent 60%),
+    linear-gradient(175deg, #0d0b14 0%, #0a0a0f 100%);
+  z-index: 0;
+}
+
+.cover-line {
+  position: absolute;
+  top: 0; left: 50%;
+  width: 1px; height: 100%;
+  background: linear-gradient(to bottom, transparent 0%, var(--ink-60) 30%, var(--ink-60) 70%, transparent 100%);
+  z-index: 1;
+  opacity: 0.3;
+}
+
+.cover-content {
+  position: relative;
+  z-index: 2;
+  padding: 0 clamp(1.5rem, 4vw, 3rem);
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.cover-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  opacity: 0;
+  animation: fadeIn 1s ease 0.3s forwards;
+}
+
+.cover-eyebrow::before {
+  content: '';
+  width: 40px; height: 1px;
+  background: var(--gold);
+}
+
+@keyframes fadeIn { to { opacity: 1; } }
+
+.cover-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  font-weight: 300;
+  line-height: 1.0;
+  margin-bottom: 2rem;
+  letter-spacing: -0.02em;
+}
+
+.cover-title .word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: wordReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.cover-title .word:nth-child(1) { animation-delay: 0.5s; }
+.cover-title .word:nth-child(2) { animation-delay: 0.6s; }
+.cover-title .word:nth-child(3) { animation-delay: 0.7s; }
+.cover-title .word:nth-child(4) { animation-delay: 0.8s; }
+.cover-title .word:nth-child(5) { animation-delay: 0.9s; }
+
+@keyframes wordReveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.cover-title em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+
+.cover-subtitle {
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: var(--ink-20);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 3rem;
+  opacity: 0;
+  animation: fadeIn 1s ease 1.2s forwards;
+}
+
+.cover-meta {
+  display: flex;
+  gap: 3rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--ink-40);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeIn 1s ease 1.5s forwards;
+}
+
+.cover-scroll {
+  position: absolute;
+  bottom: 2.5rem;
+  right: clamp(1.5rem, 4vw, 3rem);
+  z-index: 2;
+  writing-mode: vertical-rl;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-40);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  opacity: 0;
+  animation: fadeIn 1s ease 1.8s forwards;
+}
+
+.cover-scroll::after {
+  content: '';
+  width: 1px; height: 50px;
+  background: linear-gradient(to bottom, var(--ink-40), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; height: 50px; }
+  50% { opacity: 0.8; height: 60px; }
+}
+
+/* ════════════════════════════════ EXEC SUMMARY ════════════════════════════════ */
+.exec-summary {
+  padding: 8rem 0;
+  border-bottom: 1px solid var(--ink-60);
+}
+
+.exec-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.exec-left h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 1.5rem;
+}
+
+.exec-left h2 em { font-style: italic; color: var(--gold-light); font-weight: 300; }
+
+.exec-left p {
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--ink-20);
+  line-height: 1.8;
+}
+
+.kpi-stack { display: flex; flex-direction: column; gap: 0; }
+
+.kpi {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--ink-80);
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+}
+
+.kpi:last-child { border-bottom: none; }
+
+.kpi-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 80px;
+}
+
+.kpi-label {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--ink-20);
+  line-height: 1.5;
+}
+
+/* ════════════════════════════════ ACT SEPARATOR ════════════════════════════════ */
+.act {
+  padding: 6rem 0 3rem;
+  position: relative;
+}
+
+.act-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--ink-40);
+  margin-bottom: 0.75rem;
+}
+
+.act-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 300;
+  line-height: 1.15;
+  max-width: 700px;
+  letter-spacing: -0.01em;
+}
+
+.act-title strong { font-weight: 700; }
+.act-title em { font-style: italic; color: var(--gold-light); font-weight: 300; }
+
+.act-desc {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--ink-20);
+  max-width: 600px;
+  line-height: 1.8;
+}
+
+.act-rule {
+  width: 60px; height: 2px;
+  margin-top: 2rem;
+  border: none;
+}
+
+.rule-gold { background: var(--gold); }
+.rule-fire { background: var(--fire); }
+.rule-sea { background: var(--sea); }
+.rule-sage { background: var(--sage); }
+.rule-violet { background: var(--violet); }
+.rule-blush { background: var(--blush); }
+
+/* ════════════════════════════════ SCENE CARD ════════════════════════════════ */
+.scene-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 3rem 0;
+  border: 1px solid var(--ink-80);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--ink-90);
+  transition: border-color 0.4s;
+}
+
+.scene-card:hover { border-color: var(--ink-60); }
+
+.scene-card.reverse { direction: rtl; }
+.scene-card.reverse > * { direction: ltr; }
+
+.scene-card.full-width {
+  grid-template-columns: 1fr;
+}
+
+.drum-card {
+  align-items: center;
+}
+
+.drum-card .scene-media {
+  aspect-ratio: 16/9;
+}
+
+/* Media side */
+.scene-media {
+  aspect-ratio: 4/3;
+  background: var(--ink);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.scene-media::after {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 23px, #ffffff02 23px, #ffffff02 24px),
+    repeating-linear-gradient(90deg, transparent, transparent 23px, #ffffff02 23px, #ffffff02 24px);
+  pointer-events: none;
+}
+
+.media-placeholder {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.media-placeholder .icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  display: block;
+  opacity: 0.5;
+}
+
+.media-placeholder .label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-40);
+  max-width: 200px;
+  line-height: 1.6;
+}
+
+.media-placeholder .filename {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.55rem;
+  color: var(--ink-60);
+  margin-top: 0.5rem;
+  display: block;
+}
+
+.scene-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.scene-gallery-trigger {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.mug-flip-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.mug-flip-image.top {
+  opacity: 0;
+  animation: mugFlip 4.8s ease-in-out infinite;
+}
+
+.mug-flip-hint {
+  position: absolute;
+  left: 0.8rem;
+  bottom: 0.8rem;
+  z-index: 2;
+  padding: 0.28rem 0.48rem;
+  border: 1px solid #ffffff35;
+  background: #08080d9e;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--paper);
+  pointer-events: none;
+}
+
+@keyframes mugFlip {
+  0%, 42% { opacity: 0; }
+  52%, 92% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.erosion-sequence {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.erosion-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.45s ease-in-out;
+}
+
+.erosion-stage.active {
+  opacity: 1;
+}
+
+.image-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: #020208c9;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.image-modal.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.image-modal-dialog {
+  width: min(100%, 980px);
+  border: 1px solid var(--ink-60);
+  border-radius: 8px;
+  background: var(--ink-90);
+  padding: 0.9rem;
+  position: relative;
+}
+
+.image-modal-close {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--ink-60);
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.image-modal-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #05050a;
+}
+
+.image-modal-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Content side */
+.scene-content {
+  padding: 2rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.scene-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 2px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.55rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  width: fit-content;
+}
+
+.badge-success { background: #5a9a6e18; color: var(--sage); border: 1px solid #5a9a6e30; }
+.badge-fail { background: #e8442a12; color: var(--ember); border: 1px solid #e8442a28; }
+.badge-fix { background: #c9a84c15; color: var(--gold); border: 1px solid #c9a84c30; }
+.badge-prompt { background: #7c5cbf15; color: var(--violet); border: 1px solid #7c5cbf30; }
+.badge-result { background: #2d8fa515; color: var(--sea-light); border: 1px solid #2d8fa530; }
+
+.scene-heading {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 0.75rem;
+}
+
+.scene-heading em { font-style: italic; font-weight: 300; color: var(--gold-light); }
+
+.scene-prompt {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--paper-dim);
+  background: var(--ink);
+  padding: 0.8rem 1rem;
+  border-radius: 3px;
+  border-left: 2px solid var(--violet);
+  margin-bottom: 1rem;
+}
+
+.scene-text {
+  font-size: 0.88rem;
+  font-weight: 300;
+  color: var(--ink-20);
+  line-height: 1.8;
+}
+
+.scene-text strong { font-weight: 600; color: var(--paper); }
+
+/* Expandable MCP */
+.mcp-btn {
+  margin-top: 1.2rem;
+  background: none;
+  border: 1px solid var(--ink-60);
+  color: var(--ink-40);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.8rem;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.25s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.mcp-btn:hover { border-color: var(--ink-40); color: var(--paper-dim); }
+
+.mcp-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mcp-panel.open { max-height: 400px; }
+
+.mcp-inner {
+  padding: 1rem 0 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--ink-40);
+  line-height: 2;
+}
+
+.mcp-inner code {
+  color: var(--sea-light);
+}
+
+.mcp-inner .val { color: var(--gold); }
+
+/* ════════════════════════════════ INSIGHT CALLOUT ════════════════════════════════ */
+.insight {
+  margin: 3rem 0;
+  padding: 2.5rem;
+  border-left: 3px solid var(--gold);
+  background: linear-gradient(135deg, #c9a84c06, transparent 60%);
+}
+
+.insight-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+
+.insight-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--paper);
+}
+
+/* ════════════════════════════════ FINDINGS GRID ════════════════════════════════ */
+.findings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin: 3rem 0;
+}
+
+.finding {
+  padding: 2rem;
+  background: var(--ink-90);
+  border: 1px solid var(--ink-80);
+}
+
+.finding-icon { font-size: 1.2rem; margin-bottom: 0.75rem; display: block; }
+
+.finding h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.finding p {
+  font-size: 0.78rem;
+  font-weight: 300;
+  color: var(--ink-20);
+  line-height: 1.7;
+}
+
+/* ════════════════════════════════ PROGRESSION BAR ════════════════════════════════ */
+.progression {
+  margin: 3rem 0;
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--ink-80);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.prog-step {
+  flex: 1;
+  padding: 1.5rem 1.2rem;
+  text-align: center;
+  border-right: 1px solid var(--ink-80);
+  position: relative;
+  transition: background 0.3s;
+}
+
+.prog-step:last-child { border-right: none; }
+.prog-step:hover { background: var(--ink-90); }
+
+.prog-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.prog-label {
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: var(--ink-20);
+  line-height: 1.4;
+}
+
+/* ════════════════════════════════ FOOTER ════════════════════════════════ */
+.footer {
+  padding: 4rem 0;
+  border-top: 1px solid var(--ink-80);
+  margin-top: 6rem;
+  text-align: center;
+}
+
+.footer p {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--ink-40);
+  letter-spacing: 0.08em;
+  line-height: 2;
+}
+
+/* ════════════════════════════════ RESPONSIVE ════════════════════════════════ */
+@media (max-width: 768px) {
+  .exec-grid, .scene-card, .findings-grid { grid-template-columns: 1fr; }
+  .scene-card.reverse { direction: ltr; }
+  .cover-meta { flex-direction: column; gap: 0.5rem; }
+  .progression { flex-direction: column; }
+  .prog-step { border-right: none; border-bottom: 1px solid var(--ink-80); }
+  .image-modal { padding: 0.75rem; }
+  .image-modal-dialog { padding: 0.65rem; }
+  .image-modal-close {
+    top: 0.35rem;
+    right: 0.35rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════════════════════════════════════╗
+     ║  COVER                                                         ║
+     ╚══════════════════════════════════════════════════════════════════╝ -->
+<section class="cover">
+  <div class="cover-bg"></div>
+  <div class="cover-grain"></div>
+  <div class="cover-line"></div>
+  <div class="cover-content">
+    <div class="cover-eyebrow">Case Study — Product Design Through AI</div>
+    <h1 class="cover-title">
+      <span class="word">From </span>
+      <span class="word"><em>blank canvas</em> </span>
+      <span class="word">to </span>
+      <span class="word"><em>vibrant</em> </span>
+      <span class="word">product</span>
+    </h1>
+    <p class="cover-subtitle">
+      A real-time chronicle of designing a coffee mug through conversation alone — 
+      where AI controlled Blender via MCP, iterated through failures, 
+      and arrived at something neither human nor machine could have built independently.
+    </p>
+    <div class="cover-meta">
+      <span>Pavan Kumar</span>
+      <span>March 2026</span>
+      <span>~80 MCP Calls</span>
+      <span>4 Complete Rebuilds</span>
+    </div>
+  </div>
+  <div class="cover-scroll">Scroll</div>
+</section>
+
+<!-- ╔══════════════════════════════════════════════════════════════════╗
+     ║  EXECUTIVE SUMMARY                                             ║
+     ╚══════════════════════════════════════════════════════════════════╝ -->
+<section class="exec-summary">
+  <div class="container">
+    <div class="exec-grid">
+      <div class="exec-left reveal">
+        <h2>The core question: can an AI <em>design a physical product</em> through conversation?</h2>
+        <p>We tested Claude's ability to control Blender — a professional 3D modeling tool — through MCP (Model Context Protocol) tool calls. The task: design a coffee mug from scratch, responding to real-time user feedback on aesthetics, proportions, and decoration. What emerged was a pattern of ambitious proposals, honest failures, and iterative refinement that ultimately produced a viable product design.</p>
+      </div>
+      <div class="kpi-stack reveal delay-2">
+        <div class="kpi">
+          <span class="kpi-num" style="color:var(--fire)">4×</span>
+          <span class="kpi-label">Complete scene rebuilds required to get the basic form right</span>
+        </div>
+        <div class="kpi">
+          <span class="kpi-num" style="color:var(--gold)">~80</span>
+          <span class="kpi-label">MCP tool calls executed across the session — code, screenshots, scene queries</span>
+        </div>
+        <div class="kpi">
+          <span class="kpi-num" style="color:var(--sea)">60+</span>
+          <span class="kpi-label">Individual 3D objects in the final decorated mug scene</span>
+        </div>
+        <div class="kpi">
+          <span class="kpi-num" style="color:var(--sage)">15</span>
+          <span class="kpi-label">Custom shader materials with emission glow, created procedurally</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ╔══════════════════════════════════════════════════════════════════╗
+     ║  ACT I — OBSERVATION                                           ║
+     ╚══════════════════════════════════════════════════════════════════╝ -->
+<div class="container">
+
+<div class="act reveal">
+  <div class="act-label">Act I</div>
+  <h2 class="act-title"><strong>Observation.</strong> Understanding the existing scene before proposing change.</h2>
+  <p class="act-desc">Every engagement begins with discovery. Claude's first action was not to build — it was to look.</p>
+  <hr class="act-rule rule-gold">
+</div>
+
+<div class="scene-card reveal">
+  <div class="scene-media">
+    <button
+      class="scene-gallery-trigger"
+      type="button"
+      data-image-one="blender-screen-white-coffee-mug.png"
+      data-image-two="blender-screen-original-white-mug.png"
+      data-alt-one="White coffee mug in Blender viewport"
+      data-alt-two="Original white mug in Blender viewport"
+      aria-label="Open mug images in modal"
+    >
+      <img class="mug-flip-image" src="blender-screen-white-coffee-mug.png" alt="White coffee mug in Blender viewport">
+      <img class="mug-flip-image top" src="blender-screen-original-white-mug.png" alt="Original white mug in Blender viewport">
+      <span class="mug-flip-hint">Tap to enlarge</span>
+    </button>
+  </div>
+  <div class="scene-content">
+    <span class="scene-badge badge-prompt">Opening move</span>
+    <h3 class="scene-heading">The brief was open-ended: <em>"What do you see?"</em></h3>
+    <div class="scene-prompt">"what do you see on the blender screen"</div>
+    <p class="scene-text">Claude called <strong>get_viewport_screenshot</strong>, <strong>get_scene_info</strong>, and <strong>get_object_info</strong> — identifying a smooth white ceramic mug (29,664 vertices), one area light, a camera, and a ground plane. Four objects. Two materials. A clean starting point.</p>
+    <button class="mcp-btn" onclick="togglePanel(this)">▸ MCP Details</button>
+    <div class="mcp-panel">
+      <div class="mcp-inner">
+        <code>get_viewport_screenshot</code>(max_size=<span class="val">800</span>)<br>
+        <code>get_scene_info</code>() → <span class="val">4 objects, 2 materials</span><br>
+        <code>get_object_info</code>("tea mug") → <span class="val">29,664 verts, 59,328 edges</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════════════╗
+     ║  ACT II — AMBITION                                              ║
+     ╚══════════════════════════════════════════════════════════════════╝ -->
+
+<div class="act reveal">
+  <div class="act-label">Act II</div>
+  <h2 class="act-title"><strong>Ambition.</strong> A proposal for something <em>"never seen before"</em> - and the cost of overreach.</h2>
+  <p class="act-desc">Claude proposed "The Erosion Mug" - Voronoi fracture holes, a DNA helix handle, a gravity-defying tilted base, and bioluminescent glowing cracks. Some of it worked brilliantly. Some of it didn't.</p>
+  <hr class="act-rule rule-fire">
+</div>
+
+<div class="scene-card reveal">
+  <div class="scene-media">
+    <div class="erosion-sequence" aria-label="Procedural erosion progression">
+      <img class="erosion-stage active" src="procedural-erosion-stage-1.png" alt="First stage of erosion mug">
+      <img class="erosion-stage" src="procedural-erosion-stage-2.png" alt="Second stage of erosion mug">
+      <img class="erosion-stage" src="procedural-erosion-stage-3.png" alt="Third stage of erosion mug">
+    </div></div>
+  <div class="scene-content">
+    <span class="scene-badge badge-success">Success</span>
+    <h3 class="scene-heading">Procedural erosion - <em>where math meets sculpture</em></h3>
+    <p class="scene-text">Using <strong>Voronoi noise + Perlin noise</strong> layered together, Claude selected and deleted 4,533 faces from the mug body in a natural, organic pattern. A Solidify modifier gave the broken edges visible ceramic thickness. <strong>This was genuinely impressive procedural modeling</strong> - the kind of organic destruction pattern that would take a human artist significant manual work.</p>
+    <button class="mcp-btn" onclick="togglePanel(this)">MCP Details</button>
+    <div class="mcp-panel">
+      <div class="mcp-inner">
+        <code>execute_blender_code</code> -> bmesh face selection via <span class="val">noise.noise(fc * 3.5, noise_basis='VORONOI_F1')</span><br>
+        <code>execute_blender_code</code> -> delete <span class="val">1,167 + 3,366 faces</span><br>
+        <code>execute_blender_code</code> -> Solidify modifier (thickness=<span class="val">0.04</span>)
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="scene-card reverse reveal">
+  <div class="scene-media">
+    <div class="erosion-sequence" aria-label="DNA helix handle progression">
+      <img class="erosion-stage active" src="dna-helix-handle-stage-1-inside-mistake.png" alt="Double helix handle mistake made inside mug">
+      <img class="erosion-stage" src="dna-helix-handle-stage-2-top-view-issue.png" alt="Top view issue of added double helix">
+      <img class="erosion-stage" src="dna-helix-handle-stage-3-double-handle-mistake.png" alt="Double handles mistake">
+      <img class="erosion-stage" src="dna-helix-handle-stage-4-side-view.png" alt="Double helix handle side view">
+      <img class="erosion-stage" src="dna-helix-handle-stage-5.png" alt="Double helix handle">
+      <img class="erosion-stage" src="dna-helix-handle-stage-6-final-erosion.png" alt="Final erosion mug">
+    </div>
+  </div>
+  <div class="scene-content">
+    <span class="scene-badge badge-fail">Failure -> Recovery</span>
+    <h3 class="scene-heading">The DNA helix handle: <em>a spatial reasoning problem</em></h3>
+    <p class="scene-text">The helix appeared <strong>inside the mug</strong> on the first attempt - wrong coordinate space. Second attempt: still inside. Third attempt: wrong scale. It took <strong>3 complete rebuilds</strong> to correctly map local coordinates to world space. The underlying issue: Claude confused the mug's local origin offset (0, 0, 1.193) with its surface geometry bounds.</p>
+  </div>
+</div>
+
+<div class="scene-card reveal">
+  <div class="scene-media">
+    <video class="scene-video" controls autoplay loop muted playsinline preload="metadata" data-playback-rate="5" aria-label="Boolean operations screen recording">
+      <source src="boolean-operations-version-trap-30s-5fps.webm" type="video/webm">
+    </video>
+  </div>
+  <div class="scene-content">
+    <span class="scene-badge badge-fail">Failure</span>
+    <h3 class="scene-heading">Boolean operations: <em>the Blender version trap</em></h3>
+    <p class="scene-text">Cutting the base at an angle hit <strong>3 sequential errors</strong>: <strong>solver='FAST'</strong> doesn't exist (only FLOAT, EXACT, MANIFOLD). EXACT solver's modifier was disabled. Claude abandoned booleans entirely and deleted faces below an angled plane equation - a manual workaround for a tool limitation it didn't anticipate.</p>
+  </div>
+</div>
+
+<div class="insight reveal">
+  <div class="insight-label">Key Insight</div>
+  <p class="insight-text">Procedural generation (noise patterns, mathematical curves) is Claude's strength. Spatial reasoning in 3D coordinate systems is its persistent weakness - and Blender API version differences create unpredictable failure points.</p>
+</div>
+
+<div class="act reveal">
+  <div class="act-label">Act III</div>
+  <h2 class="act-title"><strong>The pivot.</strong> User uploads a reference image. <em>Everything changes.</em></h2>
+  <p class="act-desc">A stacked-segment mug with a ladder handle. Claude rebuilt the entire scene to match - then the user delivered the most important feedback of the session.</p>
+  <hr class="act-rule rule-sea">
+</div>
+
+<div class="scene-card reveal">
+  <div class="scene-media">
+    <img class="scene-video" src="visual-reference-input-image.png" alt="User reference image - stacked segments with ladder-style handle">
+  </div>
+  <div class="scene-content">
+    <span class="scene-badge badge-prompt">Reference input</span>
+    <h3 class="scene-heading">Visual reference changes <em>everything</em></h3>
+    <div class="scene-prompt">"i want you to change the current design to this specific design and make it come more better than in the picture"</div>
+    <p class="scene-text">Claude analyzed the uploaded image: 3 stacked cylindrical segments, horizontal bar handle with ball ends, notch cutouts at the base. It <strong>cleared the entire scene</strong> and rebuilt from scratch - each segment as a separate hollow cylinder.</p>
+  </div>
+</div>
+
+<div class="scene-card reverse reveal drum-card">
+  <div class="scene-media">
+    <video class="scene-video" controls autoplay loop muted playsinline preload="metadata" data-playback-rate="5" aria-label="Drum problem progression video">
+      <source src="drum-problem-user-verdict-30s-5fps.webm" type="video/webm">
+    </video>
+  </div>
+  <div class="scene-content" style="padding: 2.5rem;">
+    <span class="scene-badge badge-fail" style="font-size:0.7rem; padding: 0.3rem 1rem;">Critical Failure - The "Drum" Problem</span>
+    <h3 class="scene-heading" style="font-size: 1.6rem; margin-top: 0.5rem;">The user's verdict: <em>"It looks like a drum, not a coffee mug."</em></h3>
+    <div class="scene-prompt" style="margin: 1.5rem 0; font-size: 0.82rem;">"i am not getting a sense of it as a coffee mug its more like a drum to me something is off the handle is not well placed and the mug look like a drum please change then into a new kinda designs and also handle is main here make it something like hand curled or fits perfectly into it"</div>
+    <p class="scene-text" style="max-width: 700px;">This was <strong>the most important moment of the session.</strong> The stacked segments were each 0.72 units tall (2.4 total) - proportions that read as industrial barrel, not coffee vessel. The ladder handle floated away from the body. Claude had correctly replicated the reference geometry but <strong>failed to understand what makes an object feel like its intended category.</strong> This required a fundamental rethink - not a parameter tweak.</p>
+  </div>
+</div>
+
+<div class="insight reveal">
+  <div class="insight-label">Critical Takeaway</div>
+  <p class="insight-text">AI can replicate geometry with precision. It cannot yet judge whether geometry reads as the intended object. Proportional feel - what makes a mug look like a mug - requires human judgment in the loop.</p>
+</div>
+<div class="act reveal">
+  <div class="act-label">Act IV</div>
+  <h2 class="act-title"><strong>Back to fundamentals.</strong> Third rebuild. <em>This time, the proportions come first.</em></h2>
+  <p class="act-desc">A tapered cone. A hollowed interior. An ergonomic handle. The simplest version that unambiguously reads as "coffee mug."</p>
+  <hr class="act-rule rule-sage">
+</div>
+
+<div class="scene-card reveal">
+  <div class="scene-media">
+    <video class="scene-video" controls autoplay loop muted playsinline preload="metadata" data-playback-rate="5" aria-label="Simplicity wins mug progression video">
+      <source src="simplicity-wins-mug-30s-5fps.webm" type="video/webm">
+    </video>
+  </div>
+  <div class="scene-content">
+    <span class="scene-badge badge-success">✓ Breakthrough</span>
+    <h3 class="scene-heading">Simplicity wins: <em>the mug that looks like a mug</em></h3>
+    <p class="scene-text">Bottom radius 0.36, top radius 0.42, height 0.95. Hollowed with boolean difference. Smooth shading. Warm cream ceramic material. <strong>For the first time in the session, the result immediately reads as "coffee mug."</strong> The lesson: start with the archetype, then deviate.</p>
+  </div>
+</div>
+
+<div class="scene-card reverse reveal">
+  <div class="scene-media">
+    <video class="scene-video" controls autoplay loop muted playsinline preload="metadata" data-playback-rate="5" aria-label="Per-point radius taper ergonomic breakthrough video">
+      <source src="radius-taper-ergonomic-breakthrough-30s-5fps.webm" type="video/webm">
+    </video>
+  </div>
+  <div class="scene-content">
+    <span class="scene-badge badge-success">✓ Technique</span>
+    <h3 class="scene-heading">Per-point radius taper: <em>the ergonomic breakthrough</em></h3>
+    <p class="scene-text">The handle was a NURBS curve with <strong>per-point radius values</strong> — thinner at attachment points, thicker in the grip zone. Sine-wave modulation created finger bump ridges. This single technique produced a handle that looks designed for a human hand — and it was entirely procedural.</p>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════════════╗
+     ║  ACT V — ITERATION                                             ║
+     ╚══════════════════════════════════════════════════════════════════╝ -->
+
+<div class="act reveal">
+  <div class="act-label">Act V</div>
+  <h2 class="act-title"><strong>Rapid iteration.</strong> The user directs, <em>Claude executes.</em> Single-prompt corrections.</h2>
+  <p class="act-desc">This is where the human-AI collaboration found its rhythm. Each correction was one sentence → one immediate fix.</p>
+  <hr class="act-rule rule-violet">
+</div>
+
+<div class="progression reveal">
+  <div class="prog-step">
+    <div class="prog-num" style="color:var(--gold)">#1</div>
+    <div class="prog-label">"Make bottom wider than top"<br><em style="color:var(--ink-40)">→ Inverted taper</em></div>
+  </div>
+  <div class="prog-step">
+    <div class="prog-num" style="color:var(--fire)">#2</div>
+    <div class="prog-label">"Remove extra ring at top"<br><em style="color:var(--ink-40)">→ Deleted LipRim</em></div>
+  </div>
+  <div class="prog-step">
+    <div class="prog-num" style="color:var(--sea)">#3</div>
+    <div class="prog-label">"Handle thick enough for hand"<br><em style="color:var(--ink-40)">→ bevel 0.022→0.055</em></div>
+  </div>
+  <div class="prog-step">
+    <div class="prog-num" style="color:var(--violet)">#4</div>
+    <div class="prog-label">"Bring handle closer"<br><em style="color:var(--ink-40)">→ max_out 0.55→0.32</em></div>
+  </div>
+</div>
+
+<div class="scene-card full-width reveal">
+  <div class="scene-media" style="aspect-ratio: 16/9;">
+    <video class="scene-video" controls autoplay loop muted playsinline preload="metadata" data-playback-rate="5" aria-label="Rapid iteration montage video">
+      <source src="rapid-iteration-montage-30s-5fps.webm" type="video/webm">
+    </video>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════════════╗
+     ║  ACT VI — DECORATION WARFARE                                    ║
+     ╚══════════════════════════════════════════════════════════════════╝ -->
+
+<div class="act reveal">
+  <div class="act-label">Act VI</div>
+  <h2 class="act-title"><strong>Decoration warfare.</strong> Three failed starfish. 270 orphaned data blocks. <em>Then a solution.</em></h2>
+  <p class="act-desc">Placing 3D decorations on a curved, tapered surface proved far harder than creating the mug itself.</p>
+  <hr class="act-rule rule-blush">
+</div>
+
+<div class="scene-card reveal">
+  <div class="scene-media">
+    <video class="scene-video" controls autoplay loop muted playsinline preload="metadata" data-playback-rate="5" aria-label="Cyclic NURBS curves with surface-normal alignment video">
+      <source src="cyclic-nurbs-surface-normal-alignment-30s-5fps.webm" type="video/webm">
+    </video>
+  </div>
+  <div class="scene-content">
+    <span class="scene-badge badge-success">✓ Approach 3 — Solution</span>
+    <h3 class="scene-heading">Cyclic NURBS curves with <em>surface-normal alignment</em></h3>
+    <p class="scene-text">The winning formula: cyclic NURBS star shape + <strong>curve extrude</strong> for thickness + <strong>surface-normal rotation matrix</strong> accounting for the mug's taper angle. Clean geometry, no mesh artifacts, proper orientation on a curved surface. Also: rebuilt the mug body with <strong>Solidify modifier</strong> instead of boolean to eliminate topology issues.</p>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════════════╗
+     ║  ACT VII — THE FINAL PRODUCT                                    ║
+     ╚══════════════════════════════════════════════════════════════════╝ -->
+
+<div class="act reveal">
+  <div class="act-label">Act VII</div>
+  <h2 class="act-title"><strong>The final product.</strong> Vibrant, decorated, <em>undeniably a mug.</em></h2>
+  <p class="act-desc">Lavender-to-coral gradient. 60+ decoration objects. 15 custom materials with emission glow. Four rounds of lighting refinement.</p>
+  <hr class="act-rule rule-gold">
+</div>
+
+<div class="scene-card full-width reveal">
+  <div class="scene-media" style="aspect-ratio: 16/9; width: min(86%, 900px); min-height: clamp(280px, 45vw, 520px); margin: 0 auto;">
+    <video class="scene-video" controls autoplay loop muted playsinline preload="metadata" data-playback-rate="5" aria-label="Final decorated mug video">
+      <source src="final-product-vibrant-mug-30s-5fps.webm" type="video/webm">
+    </video>
+  </div>
+</div>
+
+<div class="findings-grid reveal">
+  <div class="finding">
+    <span class="finding-icon">☀️</span>
+    <h4>2 Sun Designs</h4>
+    <p>12 radiant rays each in orange, yellow, gold, coral, peach, red — built from elongated flattened spheres joined to a central disc</p>
+  </div>
+  <div class="finding">
+    <span class="finding-icon">🌀</span>
+    <h4>2 Spirals + 4 Swirls</h4>
+    <p>Gold and hot pink spirals wrapping the body (1.5–1.8 loops). Curl doodles in coral, gold, lavender — NURBS with radius taper</p>
+  </div>
+  <div class="finding">
+    <span class="finding-icon">🌊</span>
+    <h4>3 Distant Waves</h4>
+    <p>Sky blue, mint, lavender — sine-wave undulation along curved mug surface with tapered endpoints</p>
+  </div>
+  <div class="finding">
+    <span class="finding-icon">🌈</span>
+    <h4>6-Band Rainbow Arc</h4>
+    <p>Red → Orange → Yellow → Green → Blue → Purple — each band as a separate NURBS curve offset by height</p>
+  </div>
+  <div class="finding">
+    <span class="finding-icon">⭐</span>
+    <h4>6 Starfish + 8 Sparkles</h4>
+    <p>Rainbow starfish (NURBS curves). Four-point sparkle stars from crossed elongated spheres — gold, yellow, white</p>
+  </div>
+  <div class="finding">
+    <span class="finding-icon">💎</span>
+    <h4>Hearts, Moons, Diamonds, Clouds</h4>
+    <p>3 hearts (joined spheres + cone). 3 crescent moons (boolean cut). 3 diamonds. 2 clouds (joined puff spheres). 27+ polka dots</p>
+  </div>
+</div>
+
+<div class="scene-card reveal">
+  <div class="scene-media">
+    <div class="erosion-sequence" aria-label="Final product progression images">
+      <img class="erosion-stage active" src="lighting-battle-stage-1.png" alt="Final product image stage 1">
+      <img class="erosion-stage" src="lighting-battle-stage-2.png" alt="Final product image stage 2">
+      <img class="erosion-stage" src="lighting-battle-stage-3.png" alt="Final product image stage 3">
+      <img class="erosion-stage" src="lighting-battle-stage-4.png" alt="Final product image stage 4">
+      <img class="erosion-stage" src="lighting-battle-stage-5.png" alt="Final product image stage 5">
+      <img class="erosion-stage" src="lighting-battle-stage-6.png" alt="Final product image stage 6">
+      <span class="mug-flip-hint">Tap to enlarge</span>
+    </div>
+  </div>
+  <div class="scene-content">
+    <span class="scene-badge badge-fix">4 Rounds</span>
+    <h3 class="scene-heading">The lighting battle: <em>"still too bright"</em></h3>
+    <div class="scene-prompt">"please adjust the lighting it is too heavy" ... "remove top lightings" ... "add one light but not too bright"</div>
+    <p class="scene-text"><strong>Round 1:</strong> 3-point studio (200+80+120). "Too heavy." <strong>Round 2:</strong> Cut 55%. Still too bright. <strong>Round 3:</strong> Cut again. "Remove top lights." <strong>Round 4:</strong> All removed. "Add one but gentle." Final: 2 soft area lights (25+12 energy). The decorations' emission glow does the rest.</p>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════════════════════════╗
+     ║  FINDINGS                                                       ║
+     ╚══════════════════════════════════════════════════════════════════╝ -->
+
+<div class="act reveal">
+  <div class="act-label">Findings</div>
+  <h2 class="act-title"><strong>What works.</strong> What doesn't. <em>And the pattern that makes it productive.</em></h2>
+  <hr class="act-rule rule-gold">
+</div>
+
+<div class="findings-grid reveal">
+  <div class="finding" style="border-left: 3px solid var(--sage);">
+    <span class="finding-icon">✓</span>
+    <h4>Procedural Geometry</h4>
+    <p>Voronoi noise, sine-wave tapers, mathematical curves — Claude excels at code-driven form generation</p>
+  </div>
+  <div class="finding" style="border-left: 3px solid var(--sage);">
+    <span class="finding-icon">✓</span>
+    <h4>Material Systems</h4>
+    <p>Complex shader node graphs with gradients, emission, procedural textures — reliably built in a single pass</p>
+  </div>
+  <div class="finding" style="border-left: 3px solid var(--sage);">
+    <span class="finding-icon">✓</span>
+    <h4>Rapid Single-Prompt Fixes</h4>
+    <p>"Make bottom wider" → done. "Remove that ring" → done. Specific instructions yield immediate, correct results</p>
+  </div>
+  <div class="finding" style="border-left: 3px solid var(--sage);">
+    <span class="finding-icon">✓</span>
+    <h4>Scene Orchestration</h4>
+    <p>Managing 60+ objects, purging orphan data, coordinating materials across objects — reliable infrastructure work</p>
+  </div>
+  <div class="finding" style="border-left: 3px solid var(--fire);">
+    <span class="finding-icon">✗</span>
+    <h4>3D Spatial Reasoning</h4>
+    <p>Local vs world coordinates caused the helix handle to be placed incorrectly 3 times — a persistent weakness</p>
+  </div>
+  <div class="finding" style="border-left: 3px solid var(--fire);">
+    <span class="finding-icon">✗</span>
+    <h4>Proportional Judgment</h4>
+    <p>The "drum" mug: geometry was technically correct but perceptually wrong. AI lacks intuitive sense of object archetypes</p>
+  </div>
+  <div class="finding" style="border-left: 3px solid var(--fire);">
+    <span class="finding-icon">✗</span>
+    <h4>Blender API Fragility</h4>
+    <p>Boolean solver names, SubSurf on complex meshes, modifier application order — version-specific traps cause cascading errors</p>
+  </div>
+  <div class="finding" style="border-left: 3px solid var(--fire);">
+    <span class="finding-icon">✗</span>
+    <h4>Subjective Aesthetics</h4>
+    <p>Lighting took 4 rounds. AI defaults to "professional" settings that users consistently find too harsh for stylized work</p>
+  </div>
+</div>
+
+<div class="insight reveal">
+  <div class="insight-label">The productive pattern</div>
+  <p class="insight-text">Claude proposes ambitiously → User gives specific directional feedback → Claude executes the correction immediately. The final product is something neither could have built alone. The human brings proportional judgment and aesthetic taste; the AI brings procedural generation and tireless iteration.</p>
+</div>
+
+</div><!-- /container -->
+
+<div class="image-modal" id="imageModal" aria-hidden="true">
+  <div class="image-modal-dialog" role="dialog" aria-modal="true" aria-label="Blender mug images">
+    <button class="image-modal-close" type="button" aria-label="Close modal" data-close-modal>&times;</button>
+    <div class="image-modal-stage">
+      <img class="image-modal-image" id="modalImage" alt="">
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>Claude × Blender MCP — Product Design Case Study</p>
+    <p>Pavan Kumar · March 2026 · ~80 MCP Tool Calls · 4 Rebuilds · 1 Final Mug</p>
+  </div>
+</footer>
+
+<!-- ════════════════════════════════ SCRIPTS ════════════════════════════════ -->
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+// MCP panel toggle
+function togglePanel(btn) {
+  const panel = btn.nextElementSibling;
+  panel.classList.toggle('open');
+  btn.textContent = panel.classList.contains('open') ? '▾ Hide MCP Details' : '▸ MCP Details';
+}
+const modal = document.getElementById('imageModal');
+const modalImage = document.getElementById('modalImage');
+
+function openImageModal(src, altText) {
+  modalImage.src = src;
+  modalImage.alt = altText || '';
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeImageModal() {
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.scene-gallery-trigger').forEach(trigger => {
+  trigger.addEventListener('click', () => {
+    const baseImage = trigger.querySelector('.mug-flip-image:not(.top)');
+    const topImage = trigger.querySelector('.mug-flip-image.top');
+    if (!baseImage || !topImage) {
+      return;
+    }
+
+    const topOpacity = parseFloat(window.getComputedStyle(topImage).opacity || '0');
+    const activeImage = topOpacity >= 0.5 ? topImage : baseImage;
+    openImageModal(activeImage.getAttribute('src'), activeImage.getAttribute('alt'));
+  });
+});
+
+// Fallback loop handling for browsers that do not honor the loop attribute reliably.
+document.querySelectorAll('video.scene-video').forEach((video) => {
+  video.loop = true;
+
+  const speed = parseFloat(video.dataset.playbackRate || '5');
+  const applySpeed = () => {
+    if (Number.isNaN(speed) || speed <= 0) {
+      return;
+    }
+    if (Math.abs(video.defaultPlaybackRate - speed) > 0.01) {
+      video.defaultPlaybackRate = speed;
+    }
+    if (Math.abs(video.playbackRate - speed) > 0.01) {
+      video.playbackRate = speed;
+    }
+  };
+  applySpeed();
+  video.addEventListener('loadedmetadata', applySpeed);
+  video.addEventListener('play', applySpeed);
+  video.addEventListener('playing', applySpeed);
+  video.addEventListener('ratechange', applySpeed);
+
+  video.addEventListener('ended', () => {
+    video.currentTime = 0;
+    const playPromise = video.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(() => {});
+    }
+  });
+});
+
+const erosionSequences = Array.from(document.querySelectorAll('.erosion-sequence'));
+erosionSequences.forEach((sequence) => {
+  const stages = Array.from(sequence.querySelectorAll('.erosion-stage'));
+  if (stages.length < 2) {
+    return;
+  }
+
+  sequence.addEventListener('click', () => {
+    const activeStage = stages.find((stage) => stage.classList.contains('active')) || stages[0];
+    openImageModal(activeStage.getAttribute('src'), activeStage.getAttribute('alt'));
+  });
+
+  let stageIndex = 0;
+  setInterval(() => {
+    stages[stageIndex].classList.remove('active');
+    stageIndex = (stageIndex + 1) % stages.length;
+    stages[stageIndex].classList.add('active');
+  }, 1800);
+});
+
+if (modal) {
+  modal.addEventListener('click', (event) => {
+    if (event.target === modal || event.target.hasAttribute('data-close-modal')) {
+      closeImageModal();
+    }
+  });
+}
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && modal && modal.classList.contains('open')) {
+    closeImageModal();
+  }
+});
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
