@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI-Driven 3D Design — Claude × Blender MCP</title>
+<title>AI-Driven 3D Design â€” Claude Ã— Blender MCP</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Outfit:wght@200;300;400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-/* ════════════════════════════════ SYSTEM ════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• SYSTEM â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 :root {
   --ink: #0b0b0f;
   --ink-90: #141419;
@@ -79,7 +79,7 @@ body {
   border-color: var(--gold);
 }
 
-/* ════════════════════════════════ UTILITY ════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• UTILITY â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .container { max-width: 1100px; margin: 0 auto; padding: 0 clamp(1.5rem, 4vw, 3rem); }
 .narrow { max-width: 780px; }
 
@@ -115,7 +115,7 @@ body {
 .delay-4 { transition-delay: 0.4s; }
 .delay-5 { transition-delay: 0.5s; }
 
-/* ════════════════════════════════ COVER ════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• COVER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .cover {
   min-height: 100vh;
   display: flex;
@@ -266,7 +266,7 @@ body {
   50% { opacity: 0.8; height: 60px; }
 }
 
-/* ════════════════════════════════ EXEC SUMMARY ════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• EXEC SUMMARY â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .exec-summary {
   padding: 8rem 0;
   border-bottom: 1px solid var(--ink-60);
@@ -323,7 +323,7 @@ body {
   line-height: 1.5;
 }
 
-/* ════════════════════════════════ ACT SEPARATOR ════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• ACT SEPARATOR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .act {
   padding: 6rem 0 3rem;
   position: relative;
@@ -372,7 +372,7 @@ body {
 .rule-violet { background: var(--violet); }
 .rule-blush { background: var(--blush); }
 
-/* ════════════════════════════════ SCENE CARD ════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• SCENE CARD â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .scene-card {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -691,7 +691,7 @@ body {
 
 .mcp-inner .val { color: var(--gold); }
 
-/* ════════════════════════════════ INSIGHT CALLOUT ════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• INSIGHT CALLOUT â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .insight {
   margin: 3rem 0;
   padding: 2.5rem;
@@ -717,7 +717,7 @@ body {
   color: var(--paper);
 }
 
-/* ════════════════════════════════ FINDINGS GRID ════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• FINDINGS GRID â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .findings-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -747,7 +747,7 @@ body {
   line-height: 1.7;
 }
 
-/* ════════════════════════════════ PROGRESSION BAR ════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• PROGRESSION BAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .progression {
   margin: 3rem 0;
   display: flex;
@@ -783,7 +783,7 @@ body {
   line-height: 1.4;
 }
 
-/* ════════════════════════════════ FOOTER ════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• FOOTER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .footer {
   padding: 4rem 0;
   border-top: 1px solid var(--ink-80);
@@ -799,7 +799,7 @@ body {
   line-height: 2;
 }
 
-/* ════════════════════════════════ RESPONSIVE ════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• RESPONSIVE â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (max-width: 768px) {
   .exec-grid, .scene-card, .findings-grid { grid-template-columns: 1fr; }
   .scene-card.reverse { direction: ltr; }
@@ -822,15 +822,15 @@ body {
   <a href="index2.html">Building Story</a>
 </div>
 
-<!-- ╔══════════════════════════════════════════════════════════════════╗
-     ║  COVER                                                         ║
-     ╚══════════════════════════════════════════════════════════════════╝ -->
+<!-- â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+     â•‘  COVER                                                         â•‘
+     â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <section class="cover">
   <div class="cover-bg"></div>
   <div class="cover-grain"></div>
   <div class="cover-line"></div>
   <div class="cover-content">
-    <div class="cover-eyebrow">Case Study — Product Design Through AI</div>
+    <div class="cover-eyebrow">Case Study â€” Product Design Through AI</div>
     <h1 class="cover-title">
       <span class="word">From </span>
       <span class="word"><em>blank canvas</em> </span>
@@ -839,7 +839,7 @@ body {
       <span class="word">product</span>
     </h1>
     <p class="cover-subtitle">
-      A real-time chronicle of designing a coffee mug through conversation alone — 
+      A real-time chronicle of designing a coffee mug through conversation alone â€” 
       where AI controlled Blender via MCP, iterated through failures, 
       and arrived at something neither human nor machine could have built independently.
     </p>
@@ -853,24 +853,24 @@ body {
   <div class="cover-scroll">Scroll</div>
 </section>
 
-<!-- ╔══════════════════════════════════════════════════════════════════╗
-     ║  EXECUTIVE SUMMARY                                             ║
-     ╚══════════════════════════════════════════════════════════════════╝ -->
+<!-- â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+     â•‘  EXECUTIVE SUMMARY                                             â•‘
+     â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <section class="exec-summary">
   <div class="container">
     <div class="exec-grid">
       <div class="exec-left reveal">
         <h2>The core question: can an AI <em>design a physical product</em> through conversation?</h2>
-        <p>We tested Claude's ability to control Blender — a professional 3D modeling tool — through MCP (Model Context Protocol) tool calls. The task: design a coffee mug from scratch, responding to real-time user feedback on aesthetics, proportions, and decoration. What emerged was a pattern of ambitious proposals, honest failures, and iterative refinement that ultimately produced a viable product design.</p>
+        <p>We tested Claude's ability to control Blender â€” a professional 3D modeling tool â€” through MCP (Model Context Protocol) tool calls. The task: design a coffee mug from scratch, responding to real-time user feedback on aesthetics, proportions, and decoration. What emerged was a pattern of ambitious proposals, honest failures, and iterative refinement that ultimately produced a viable product design.</p>
       </div>
       <div class="kpi-stack reveal delay-2">
         <div class="kpi">
-          <span class="kpi-num" style="color:var(--fire)">4×</span>
+          <span class="kpi-num" style="color:var(--fire)">4Ã—</span>
           <span class="kpi-label">Complete scene rebuilds required to get the basic form right</span>
         </div>
         <div class="kpi">
           <span class="kpi-num" style="color:var(--gold)">~80</span>
-          <span class="kpi-label">MCP tool calls executed across the session — code, screenshots, scene queries</span>
+          <span class="kpi-label">MCP tool calls executed across the session â€” code, screenshots, scene queries</span>
         </div>
         <div class="kpi">
           <span class="kpi-num" style="color:var(--sea)">60+</span>
@@ -885,15 +885,15 @@ body {
   </div>
 </section>
 
-<!-- ╔══════════════════════════════════════════════════════════════════╗
-     ║  ACT I — OBSERVATION                                           ║
-     ╚══════════════════════════════════════════════════════════════════╝ -->
+<!-- â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+     â•‘  ACT I â€” OBSERVATION                                           â•‘
+     â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="container">
 
 <div class="act reveal">
   <div class="act-label">Act I</div>
   <h2 class="act-title"><strong>Observation.</strong> Understanding the existing scene before proposing change.</h2>
-  <p class="act-desc">Every engagement begins with discovery. Claude's first action was not to build — it was to look.</p>
+  <p class="act-desc">Every engagement begins with discovery. Claude's first action was not to build â€” it was to look.</p>
   <hr class="act-rule rule-gold">
 </div>
 
@@ -917,21 +917,21 @@ body {
     <span class="scene-badge badge-prompt">Opening move</span>
     <h3 class="scene-heading">The brief was open-ended: <em>"What do you see?"</em></h3>
     <div class="scene-prompt">"what do you see on the blender screen"</div>
-    <p class="scene-text">Claude called <strong>get_viewport_screenshot</strong>, <strong>get_scene_info</strong>, and <strong>get_object_info</strong> — identifying a smooth white ceramic mug (29,664 vertices), one area light, a camera, and a ground plane. Four objects. Two materials. A clean starting point.</p>
-    <button class="mcp-btn" onclick="togglePanel(this)">▸ MCP Details</button>
+    <p class="scene-text">Claude called <strong>get_viewport_screenshot</strong>, <strong>get_scene_info</strong>, and <strong>get_object_info</strong> â€” identifying a smooth white ceramic mug (29,664 vertices), one area light, a camera, and a ground plane. Four objects. Two materials. A clean starting point.</p>
+    <button class="mcp-btn" onclick="togglePanel(this)">â–¸ MCP Details</button>
     <div class="mcp-panel">
       <div class="mcp-inner">
         <code>get_viewport_screenshot</code>(max_size=<span class="val">800</span>)<br>
-        <code>get_scene_info</code>() → <span class="val">4 objects, 2 materials</span><br>
-        <code>get_object_info</code>("tea mug") → <span class="val">29,664 verts, 59,328 edges</span>
+        <code>get_scene_info</code>() â†’ <span class="val">4 objects, 2 materials</span><br>
+        <code>get_object_info</code>("tea mug") â†’ <span class="val">29,664 verts, 59,328 edges</span>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ╔══════════════════════════════════════════════════════════════════╗
-     ║  ACT II — AMBITION                                              ║
-     ╚══════════════════════════════════════════════════════════════════╝ -->
+<!-- â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+     â•‘  ACT II â€” AMBITION                                              â•‘
+     â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 
 <div class="act reveal">
   <div class="act-label">Act II</div>
@@ -1049,7 +1049,7 @@ body {
     </video>
   </div>
   <div class="scene-content">
-    <span class="scene-badge badge-success">✓ Breakthrough</span>
+    <span class="scene-badge badge-success">âœ“ Breakthrough</span>
     <h3 class="scene-heading">Simplicity wins: <em>the mug that looks like a mug</em></h3>
     <p class="scene-text">Bottom radius 0.36, top radius 0.42, height 0.95. Hollowed with boolean difference. Smooth shading. Warm cream ceramic material. <strong>For the first time in the session, the result immediately reads as "coffee mug."</strong> The lesson: start with the archetype, then deviate.</p>
   </div>
@@ -1062,39 +1062,39 @@ body {
     </video>
   </div>
   <div class="scene-content">
-    <span class="scene-badge badge-success">✓ Technique</span>
+    <span class="scene-badge badge-success">âœ“ Technique</span>
     <h3 class="scene-heading">Per-point radius taper: <em>the ergonomic breakthrough</em></h3>
-    <p class="scene-text">The handle was a NURBS curve with <strong>per-point radius values</strong> — thinner at attachment points, thicker in the grip zone. Sine-wave modulation created finger bump ridges. This single technique produced a handle that looks designed for a human hand — and it was entirely procedural.</p>
+    <p class="scene-text">The handle was a NURBS curve with <strong>per-point radius values</strong> â€” thinner at attachment points, thicker in the grip zone. Sine-wave modulation created finger bump ridges. This single technique produced a handle that looks designed for a human hand â€” and it was entirely procedural.</p>
   </div>
 </div>
 
-<!-- ╔══════════════════════════════════════════════════════════════════╗
-     ║  ACT V — ITERATION                                             ║
-     ╚══════════════════════════════════════════════════════════════════╝ -->
+<!-- â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+     â•‘  ACT V â€” ITERATION                                             â•‘
+     â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 
 <div class="act reveal">
   <div class="act-label">Act V</div>
   <h2 class="act-title"><strong>Rapid iteration.</strong> The user directs, <em>Claude executes.</em> Single-prompt corrections.</h2>
-  <p class="act-desc">This is where the human-AI collaboration found its rhythm. Each correction was one sentence → one immediate fix.</p>
+  <p class="act-desc">This is where the human-AI collaboration found its rhythm. Each correction was one sentence â†’ one immediate fix.</p>
   <hr class="act-rule rule-violet">
 </div>
 
 <div class="progression reveal">
   <div class="prog-step">
     <div class="prog-num" style="color:var(--gold)">#1</div>
-    <div class="prog-label">"Make bottom wider than top"<br><em style="color:var(--ink-40)">→ Inverted taper</em></div>
+    <div class="prog-label">"Make bottom wider than top"<br><em style="color:var(--ink-40)">â†’ Inverted taper</em></div>
   </div>
   <div class="prog-step">
     <div class="prog-num" style="color:var(--fire)">#2</div>
-    <div class="prog-label">"Remove extra ring at top"<br><em style="color:var(--ink-40)">→ Deleted LipRim</em></div>
+    <div class="prog-label">"Remove extra ring at top"<br><em style="color:var(--ink-40)">â†’ Deleted LipRim</em></div>
   </div>
   <div class="prog-step">
     <div class="prog-num" style="color:var(--sea)">#3</div>
-    <div class="prog-label">"Handle thick enough for hand"<br><em style="color:var(--ink-40)">→ bevel 0.022→0.055</em></div>
+    <div class="prog-label">"Handle thick enough for hand"<br><em style="color:var(--ink-40)">â†’ bevel 0.022â†’0.055</em></div>
   </div>
   <div class="prog-step">
     <div class="prog-num" style="color:var(--violet)">#4</div>
-    <div class="prog-label">"Bring handle closer"<br><em style="color:var(--ink-40)">→ max_out 0.55→0.32</em></div>
+    <div class="prog-label">"Bring handle closer"<br><em style="color:var(--ink-40)">â†’ max_out 0.55â†’0.32</em></div>
   </div>
 </div>
 
@@ -1106,9 +1106,9 @@ body {
   </div>
 </div>
 
-<!-- ╔══════════════════════════════════════════════════════════════════╗
-     ║  ACT VI — DECORATION WARFARE                                    ║
-     ╚══════════════════════════════════════════════════════════════════╝ -->
+<!-- â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+     â•‘  ACT VI â€” DECORATION WARFARE                                    â•‘
+     â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 
 <div class="act reveal">
   <div class="act-label">Act VI</div>
@@ -1124,15 +1124,15 @@ body {
     </video>
   </div>
   <div class="scene-content">
-    <span class="scene-badge badge-success">✓ Approach 3 — Solution</span>
+    <span class="scene-badge badge-success">âœ“ Approach 3 â€” Solution</span>
     <h3 class="scene-heading">Cyclic NURBS curves with <em>surface-normal alignment</em></h3>
     <p class="scene-text">The winning formula: cyclic NURBS star shape + <strong>curve extrude</strong> for thickness + <strong>surface-normal rotation matrix</strong> accounting for the mug's taper angle. Clean geometry, no mesh artifacts, proper orientation on a curved surface. Also: rebuilt the mug body with <strong>Solidify modifier</strong> instead of boolean to eliminate topology issues.</p>
   </div>
 </div>
 
-<!-- ╔══════════════════════════════════════════════════════════════════╗
-     ║  ACT VII — THE FINAL PRODUCT                                    ║
-     ╚══════════════════════════════════════════════════════════════════╝ -->
+<!-- â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+     â•‘  ACT VII â€” THE FINAL PRODUCT                                    â•‘
+     â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 
 <div class="act reveal">
   <div class="act-label">Act VII</div>
@@ -1151,32 +1151,32 @@ body {
 
 <div class="findings-grid reveal">
   <div class="finding">
-    <span class="finding-icon">☀️</span>
+    <span class="finding-icon">â˜€ï¸</span>
     <h4>2 Sun Designs</h4>
-    <p>12 radiant rays each in orange, yellow, gold, coral, peach, red — built from elongated flattened spheres joined to a central disc</p>
+    <p>12 radiant rays each in orange, yellow, gold, coral, peach, red â€” built from elongated flattened spheres joined to a central disc</p>
   </div>
   <div class="finding">
-    <span class="finding-icon">🌀</span>
+    <span class="finding-icon">ðŸŒ€</span>
     <h4>2 Spirals + 4 Swirls</h4>
-    <p>Gold and hot pink spirals wrapping the body (1.5–1.8 loops). Curl doodles in coral, gold, lavender — NURBS with radius taper</p>
+    <p>Gold and hot pink spirals wrapping the body (1.5â€“1.8 loops). Curl doodles in coral, gold, lavender â€” NURBS with radius taper</p>
   </div>
   <div class="finding">
-    <span class="finding-icon">🌊</span>
+    <span class="finding-icon">ðŸŒŠ</span>
     <h4>3 Distant Waves</h4>
-    <p>Sky blue, mint, lavender — sine-wave undulation along curved mug surface with tapered endpoints</p>
+    <p>Sky blue, mint, lavender â€” sine-wave undulation along curved mug surface with tapered endpoints</p>
   </div>
   <div class="finding">
-    <span class="finding-icon">🌈</span>
+    <span class="finding-icon">ðŸŒˆ</span>
     <h4>6-Band Rainbow Arc</h4>
-    <p>Red → Orange → Yellow → Green → Blue → Purple — each band as a separate NURBS curve offset by height</p>
+    <p>Red â†’ Orange â†’ Yellow â†’ Green â†’ Blue â†’ Purple â€” each band as a separate NURBS curve offset by height</p>
   </div>
   <div class="finding">
-    <span class="finding-icon">⭐</span>
+    <span class="finding-icon">â­</span>
     <h4>6 Starfish + 8 Sparkles</h4>
-    <p>Rainbow starfish (NURBS curves). Four-point sparkle stars from crossed elongated spheres — gold, yellow, white</p>
+    <p>Rainbow starfish (NURBS curves). Four-point sparkle stars from crossed elongated spheres â€” gold, yellow, white</p>
   </div>
   <div class="finding">
-    <span class="finding-icon">💎</span>
+    <span class="finding-icon">ðŸ’Ž</span>
     <h4>Hearts, Moons, Diamonds, Clouds</h4>
     <p>3 hearts (joined spheres + cone). 3 crescent moons (boolean cut). 3 diamonds. 2 clouds (joined puff spheres). 27+ polka dots</p>
   </div>
@@ -1202,9 +1202,9 @@ body {
   </div>
 </div>
 
-<!-- ╔══════════════════════════════════════════════════════════════════╗
-     ║  FINDINGS                                                       ║
-     ╚══════════════════════════════════════════════════════════════════╝ -->
+<!-- â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+     â•‘  FINDINGS                                                       â•‘
+     â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 
 <div class="act reveal">
   <div class="act-label">Findings</div>
@@ -1214,42 +1214,42 @@ body {
 
 <div class="findings-grid reveal">
   <div class="finding" style="border-left: 3px solid var(--sage);">
-    <span class="finding-icon">✓</span>
+    <span class="finding-icon">âœ“</span>
     <h4>Procedural Geometry</h4>
-    <p>Voronoi noise, sine-wave tapers, mathematical curves — Claude excels at code-driven form generation</p>
+    <p>Voronoi noise, sine-wave tapers, mathematical curves â€” Claude excels at code-driven form generation</p>
   </div>
   <div class="finding" style="border-left: 3px solid var(--sage);">
-    <span class="finding-icon">✓</span>
+    <span class="finding-icon">âœ“</span>
     <h4>Material Systems</h4>
-    <p>Complex shader node graphs with gradients, emission, procedural textures — reliably built in a single pass</p>
+    <p>Complex shader node graphs with gradients, emission, procedural textures â€” reliably built in a single pass</p>
   </div>
   <div class="finding" style="border-left: 3px solid var(--sage);">
-    <span class="finding-icon">✓</span>
+    <span class="finding-icon">âœ“</span>
     <h4>Rapid Single-Prompt Fixes</h4>
-    <p>"Make bottom wider" → done. "Remove that ring" → done. Specific instructions yield immediate, correct results</p>
+    <p>"Make bottom wider" â†’ done. "Remove that ring" â†’ done. Specific instructions yield immediate, correct results</p>
   </div>
   <div class="finding" style="border-left: 3px solid var(--sage);">
-    <span class="finding-icon">✓</span>
+    <span class="finding-icon">âœ“</span>
     <h4>Scene Orchestration</h4>
-    <p>Managing 60+ objects, purging orphan data, coordinating materials across objects — reliable infrastructure work</p>
+    <p>Managing 60+ objects, purging orphan data, coordinating materials across objects â€” reliable infrastructure work</p>
   </div>
   <div class="finding" style="border-left: 3px solid var(--fire);">
-    <span class="finding-icon">✗</span>
+    <span class="finding-icon">âœ—</span>
     <h4>3D Spatial Reasoning</h4>
-    <p>Local vs world coordinates caused the helix handle to be placed incorrectly 3 times — a persistent weakness</p>
+    <p>Local vs world coordinates caused the helix handle to be placed incorrectly 3 times â€” a persistent weakness</p>
   </div>
   <div class="finding" style="border-left: 3px solid var(--fire);">
-    <span class="finding-icon">✗</span>
+    <span class="finding-icon">âœ—</span>
     <h4>Proportional Judgment</h4>
     <p>The "drum" mug: geometry was technically correct but perceptually wrong. AI lacks intuitive sense of object archetypes</p>
   </div>
   <div class="finding" style="border-left: 3px solid var(--fire);">
-    <span class="finding-icon">✗</span>
+    <span class="finding-icon">âœ—</span>
     <h4>Blender API Fragility</h4>
-    <p>Boolean solver names, SubSurf on complex meshes, modifier application order — version-specific traps cause cascading errors</p>
+    <p>Boolean solver names, SubSurf on complex meshes, modifier application order â€” version-specific traps cause cascading errors</p>
   </div>
   <div class="finding" style="border-left: 3px solid var(--fire);">
-    <span class="finding-icon">✗</span>
+    <span class="finding-icon">âœ—</span>
     <h4>Subjective Aesthetics</h4>
     <p>Lighting took 4 rounds. AI defaults to "professional" settings that users consistently find too harsh for stylized work</p>
   </div>
@@ -1257,7 +1257,7 @@ body {
 
 <div class="insight reveal">
   <div class="insight-label">The productive pattern</div>
-  <p class="insight-text">Claude proposes ambitiously → User gives specific directional feedback → Claude executes the correction immediately. The final product is something neither could have built alone. The human brings proportional judgment and aesthetic taste; the AI brings procedural generation and tireless iteration.</p>
+  <p class="insight-text">Claude proposes ambitiously â†’ User gives specific directional feedback â†’ Claude executes the correction immediately. The final product is something neither could have built alone. The human brings proportional judgment and aesthetic taste; the AI brings procedural generation and tireless iteration.</p>
 </div>
 
 </div><!-- /container -->
@@ -1273,12 +1273,13 @@ body {
 
 <footer class="footer">
   <div class="container">
-    <p>Claude × Blender MCP — Product Design Case Study</p>
-    <p>Pavan Kumar · March 2026 · ~80 MCP Tool Calls · 4 Rebuilds · 1 Final Mug</p>
+    <p>Claude Ã— Blender MCP â€” Product Design Case Study</p>
+    <p>Pavan Kumar Â· March 2026 Â· ~80 MCP Tool Calls Â· 4 Rebuilds Â· 1 Final Mug</p>
+    <p>This is a demo. It contains no confidential data/IP.</p>
   </div>
 </footer>
 
-<!-- ════════════════════════════════ SCRIPTS ════════════════════════════════ -->
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• SCRIPTS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <script>
 // Scroll reveal
 const observer = new IntersectionObserver((entries) => {
@@ -1295,7 +1296,7 @@ document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => 
 function togglePanel(btn) {
   const panel = btn.nextElementSibling;
   panel.classList.toggle('open');
-  btn.textContent = panel.classList.contains('open') ? '▾ Hide MCP Details' : '▸ MCP Details';
+  btn.textContent = panel.classList.contains('open') ? 'â–¾ Hide MCP Details' : 'â–¸ MCP Details';
 }
 const modal = document.getElementById('imageModal');
 const modalImage = document.getElementById('modalImage');
